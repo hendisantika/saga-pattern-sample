@@ -1,0 +1,59 @@
+### Orchestration - happy path
+POST http://localhost:8080/api/orchestration/orders
+Content-Type: application/json
+
+{"customerId": "CUST-001", "productCode": "LAPTOP-001", "quantity": 1, "amount": 1500.00, "shippingCity": "Jakarta"}
+
+### Orchestration - payment declined (amount > 5000)
+POST http://localhost:8080/api/orchestration/orders
+Content-Type: application/json
+
+{"customerId": "CUST-001", "productCode": "PHONE-001", "quantity": 1, "amount": 9000.00, "shippingCity": "Bandung"}
+
+### Orchestration - inventory fails -> refund payment, cancel order
+POST http://localhost:8080/api/orchestration/orders
+Content-Type: application/json
+
+{"customerId": "CUST-001", "productCode": "CONSOLE-001", "quantity": 1, "amount": 499.00, "shippingCity": "Surabaya"}
+
+### Orchestration - shipping fails -> release stock, refund payment, cancel order
+POST http://localhost:8080/api/orchestration/orders
+Content-Type: application/json
+
+{"customerId": "CUST-001", "productCode": "MOUSE-001", "quantity": 2, "amount": 50.00, "shippingCity": "Atlantis"}
+
+### Orchestration - saga history
+GET http://localhost:8080/api/orchestration/sagas
+
+### Choreography - happy path (202 Accepted, PENDING)
+POST http://localhost:8080/api/choreography/orders
+Content-Type: application/json
+
+{"customerId": "CUST-002", "productCode": "PHONE-001", "quantity": 1, "amount": 800.00, "shippingCity": "Bandung"}
+
+### Choreography - inventory fails
+POST http://localhost:8080/api/choreography/orders
+Content-Type: application/json
+
+{"customerId": "CUST-002", "productCode": "CONSOLE-001", "quantity": 1, "amount": 499.00, "shippingCity": "Jakarta"}
+
+### Choreography - shipping fails
+POST http://localhost:8080/api/choreography/orders
+Content-Type: application/json
+
+{"customerId": "CUST-002", "productCode": "MOUSE-001", "quantity": 3, "amount": 75.00, "shippingCity": "Gotham"}
+
+### Orders (eventually consistent for choreography)
+GET http://localhost:8080/api/orders
+
+### Payments
+GET http://localhost:8080/api/payments
+
+### Inventory
+GET http://localhost:8080/api/inventory/products
+
+### Stock reservations
+GET http://localhost:8080/api/inventory/reservations
+
+### Shipments
+GET http://localhost:8080/api/shipments
