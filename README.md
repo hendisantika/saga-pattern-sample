@@ -99,6 +99,23 @@ curl -s -X POST localhost:8080/api/choreography/orders \
 
 More requests are in [`saga.http`](saga.http) (IntelliJ HTTP Client).
 
+### Docker
+
+`compose.yaml` runs the app together with PostgreSQL. The `docker` profile (`application-docker.yaml`)
+switches the datasource from in-memory H2 to Postgres, so data survives restarts.
+
+```bash
+docker compose up --build -d     # build the image and start app + postgres
+docker compose logs -f app       # follow the saga logs
+docker compose down -v           # stop and delete the database volume
+```
+
+If something else already uses port 5432 or 8080, change the host ports:
+`POSTGRES_PORT=5433 APP_PORT=8081 docker compose up -d`.
+
+To build the image without Compose, run `docker build -t saga-pattern-sample .`. The multi-stage `Dockerfile` builds with the JDK,
+runs on a JRE with Spring Boot's layered jar, and runs as a non-root user.
+
 ### Endpoints
 
 | Method | Path | Description |
