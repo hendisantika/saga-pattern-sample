@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: saga-postgres
+    environment:
+      POSTGRES_DB: sagadb
+      POSTGRES_USER: saga
+      POSTGRES_PASSWORD: saga
+    ports:
+      # override with POSTGRES_PORT=5433 if a local PostgreSQL already uses 5432
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U saga -d sagadb" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    image: saga-pattern-sample:latest
+    container_name: saga-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      DB_URL: jdbc:postgresql://postgres:5432/sagadb
+      DB_USERNAME: saga
+      DB_PASSWORD: saga
+    ports:
+      - "${APP_PORT:-8080}:8080"
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
