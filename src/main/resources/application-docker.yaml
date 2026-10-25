@@ -1,0 +1,16 @@
+# activated by compose.yaml (SPRING_PROFILES_ACTIVE=docker): PostgreSQL instead of in-memory H2
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/sagadb}
+    username: ${DB_USERNAME:saga}
+    password: ${DB_PASSWORD:saga}
+  sql:
+    init:
+      # schema.sql only runs for embedded databases by default
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+  h2:
+    console:
+      enabled: false
