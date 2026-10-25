@@ -1,3 +1,24 @@
 spring:
   application:
     name: saga-pattern-sample
+  threads:
+    virtual:
+      enabled: true
+  # in-memory H2 with a generated name; the schemas come from schema.sql
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  h2:
+    console:
+      enabled: true
+
+saga:
+  payment:
+    # payments above this amount are declined
+    max-amount: 5000.00
+  shipping:
+    # orders to these cities cannot be shipped
+    unserviceable-cities:
+      - Atlantis
+      - Gotham
